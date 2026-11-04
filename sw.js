@@ -1,5 +1,5 @@
 // Cachet alleen de app zelf, zodat hij snel opent. Adresdata komt altijd live.
-const CACHE = "huis-in-de-buurt-v1";
+const CACHE = "fundaar-v1";
 const SHELL = ["./", "index.html", "app.js", "style.css", "manifest.webmanifest", "icon.svg", "icon-192.png"];
 
 self.addEventListener("install", (e) => {

@@ -1,6 +1,6 @@
 {
-  "name": "Huis in de buurt",
-  "short_name": "Huis hier",
+  "name": "fundaar",
+  "short_name": "fundaar",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
