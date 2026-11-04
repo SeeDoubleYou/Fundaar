@@ -1,5 +1,5 @@
 // Cachet alleen de app zelf, zodat hij snel opent. Adresdata komt altijd live.
-const CACHE = "fundaar-v5";
+const CACHE = "fundaar-v6";
 const SHELL = ["./", "index.html", "app.js", "style.css", "manifest.webmanifest", "icon.svg", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
@@ -19,7 +19,9 @@ self.addEventListener("fetch", (e) => {
   if (url.origin !== location.origin) return; // API-calls niet cachen
   // Network first, cache als fallback: updates komen zo direct door.
   e.respondWith(
-    fetch(e.request)
+    // cache: "no-cache" = altijd bij de server controleren of er een nieuwere
+    // versie is (GitHub Pages laat browsers anders 10 min een oude versie houden).
+    fetch(e.request, { cache: "no-cache" })
       .then((res) => {
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(e.request, copy));
