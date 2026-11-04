@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Huis in de buurt</title>
+  <meta name="description" content="Zie direct welk huis je voor staat en zoek het op Funda.">
+  <meta name="theme-color" content="#0b6e4f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Huis in de buurt">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Huis in de buurt</h1>
+    <button id="refresh" type="button" aria-label="Opnieuw zoeken">↻</button>
+  </header>
+
+  <main>
+    <p id="status" role="status">Locatie bepalen…</p>
+
+    <section id="here" hidden>
+      <h2>Hier sta je</h2>
+      <div id="here-card"></div>
+    </section>
+
+    <section id="nearby" hidden>
+      <h2>In de buurt</h2>
+      <ol id="nearby-list"></ol>
+    </section>
+  </main>
+
+  <footer>
+    Adressen: <a href="https://www.pdok.nl/" target="_blank" rel="noopener">PDOK / BAG</a>.
+    Geen onderdeel van Funda.
+  </footer>
+
+  <template id="addr-tpl">
+    <article class="addr">
+      <div class="addr-head">
+        <div>
+          <div class="street"></div>
+          <div class="place"></div>
+        </div>
+        <div class="dist"></div>
+      </div>
+      <div class="actions">
+        <a class="btn primary funda-addr" target="_blank" rel="noopener">Zoek dit huis op Funda</a>
+        <a class="btn funda-area" target="_blank" rel="noopener">Te koop in deze postcode</a>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
