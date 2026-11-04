@@ -19,8 +19,10 @@ function fundaAddressUrl(a) {
 }
 
 function fundaAreaUrl(a) {
-  const pc = (a.postcode || "").replace(/\s+/g, "").toLowerCase();
-  const area = pc || a.city.toLowerCase();
+  // Funda herkent alleen de 4 cijfers van een postcode; een onbekende waarde
+  // laat Funda stilletjes vallen en dan zoek je in heel Nederland.
+  const digits = (a.postcode.match(/^\d{4}/) || [""])[0];
+  const area = digits || a.city.toLowerCase();
   return "https://www.funda.nl/zoeken/koop?selected_area=" +
     encodeURIComponent(JSON.stringify([area]));
 }
@@ -64,7 +66,10 @@ function renderAddress(a) {
   node.querySelector(".place").textContent = [a.postcode, a.city].filter(Boolean).join(" ");
   node.querySelector(".dist").textContent = formatDistance(a.distance);
   node.querySelector(".funda-addr").href = fundaAddressUrl(a);
-  node.querySelector(".funda-area").href = fundaAreaUrl(a);
+  const area = node.querySelector(".funda-area");
+  area.href = fundaAreaUrl(a);
+  const digits = (a.postcode.match(/^\d{4}/) || [""])[0];
+  area.textContent = digits ? `Te koop in ${digits}` : `Te koop in ${a.city}`;
   return node;
 }
 
