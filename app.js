@@ -14,15 +14,17 @@ const statusEl = $("#status");
 // - "dit huis": zoek het exacte adres op funda.nl via een zoekmachine;
 // - "deze postcode": open Funda's eigen zoekpagina voor de postcode.
 function fundaAddressUrl(a) {
-  const q = `site:funda.nl "${a.street}" ${a.city}`;
+  // Funda schrijft huisletters/toevoegingen met streepje ("Oudegracht 5-G",
+  // URL ".../appartement-oudegracht-5-g/..."). Door alles als losse woorden
+  // in een zoekzin te zetten, matcht Google zowel titel als URL.
+  // Zonder letter matcht "Oudegracht 156" ook 156-A, 156-1 enz. (gewenst).
+  const q = `site:funda.nl/detail "${a.searchPhrase}" ${a.city}`;
   return "https://www.google.com/search?q=" + encodeURIComponent(q);
 }
 
 function fundaAreaUrl(a) {
-  // Funda herkent alleen de 4 cijfers van een postcode; een onbekende waarde
-  // laat Funda stilletjes vallen en dan zoek je in heel Nederland.
-  const digits = (a.postcode.match(/^\d{4}/) || [""])[0];
-  const area = digits || a.city.toLowerCase();
+  const pc = a.postcode.replace(/\s+/g, "").toLowerCase();
+  const area = pc || a.city.toLowerCase();
   return "https://www.funda.nl/zoeken/koop?selected_area=" +
     encodeURIComponent(JSON.stringify([area]));
 }
@@ -35,6 +37,8 @@ function toAddress(doc) {
     street: `${doc.straatnaam} ${nr}`.trim(),
     postcode: (doc.postcode || "").replace(/^(\d{4})\s*([A-Za-z]{2})$/, "$1 $2"),
     city: doc.woonplaatsnaam || "",
+    searchPhrase: [doc.straatnaam, doc.huisnummer, doc.huisletter, doc.huisnummertoevoeging]
+      .filter(Boolean).join(" "),
     distance: typeof doc.afstand === "number" ? doc.afstand : null,
   };
 }
@@ -68,8 +72,7 @@ function renderAddress(a) {
   node.querySelector(".funda-addr").href = fundaAddressUrl(a);
   const area = node.querySelector(".funda-area");
   area.href = fundaAreaUrl(a);
-  const digits = (a.postcode.match(/^\d{4}/) || [""])[0];
-  area.textContent = digits ? `Te koop in ${digits}` : `Te koop in ${a.city}`;
+  area.textContent = a.postcode ? `Te koop in ${a.postcode}` : `Te koop in ${a.city}`;
   return node;
 }
 
