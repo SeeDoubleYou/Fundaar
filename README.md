@@ -12,7 +12,8 @@ om het op Funda op te zoeken.
    (gratis open data van de overheid, BAG-adressen) geeft de dichtstbijzijnde
    adressen terug, gesorteerd op afstand.
 3. Per adres zijn er links naar Funda:
-   - **Zoek dit huis op Funda**: zoekt het exacte adres op funda.nl via Google
+   - **Open dit huis op Funda**: springt via DuckDuckGo direct naar de eerste
+     Funda-advertentie voor dit adres
      (Funda heeft geen vaste URL per adres die je zonder hun data kunt maken).
    - **Te koop in deze postcode**: opent Funda's zoekpagina voor de postcode.
 

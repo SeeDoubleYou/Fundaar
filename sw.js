@@ -1,5 +1,5 @@
 // Cachet alleen de app zelf, zodat hij snel opent. Adresdata komt altijd live.
-const CACHE = "fundaar-v3";
+const CACHE = "fundaar-v4";
 const SHELL = ["./", "index.html", "app.js", "style.css", "manifest.webmanifest", "icon.svg", "icon-192.png"];
 
 self.addEventListener("install", (e) => {

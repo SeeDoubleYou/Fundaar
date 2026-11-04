@@ -16,10 +16,12 @@ const statusEl = $("#status");
 function fundaAddressUrl(a) {
   // Funda schrijft huisletters/toevoegingen met streepje ("Oudegracht 5-G",
   // URL ".../appartement-oudegracht-5-g/..."). Door alles als losse woorden
-  // in een zoekzin te zetten, matcht Google zowel titel als URL.
+  // in een zoekzin te zetten, matcht de zoekmachine zowel titel als URL.
   // Zonder letter matcht "Oudegracht 156" ook 156-A, 156-1 enz. (gewenst).
-  const q = `site:funda.nl/detail "${a.searchPhrase}" ${a.city}`;
-  return "https://www.google.com/search?q=" + encodeURIComponent(q);
+  // De "\\" vooraan is DuckDuckGo's "spring naar eerste resultaat": je komt
+  // direct op de advertentie uit, zonder resultatenpagina.
+  const q = `\\site:funda.nl/detail/koop "${a.searchPhrase}" ${a.city} -verkocht`;
+  return "https://duckduckgo.com/?q=" + encodeURIComponent(q);
 }
 
 function fundaAreaUrl(a) {
