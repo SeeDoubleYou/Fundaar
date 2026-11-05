@@ -1,33 +1,49 @@
 # fundaar
 
+> **Status: gestopt.** Het idee is niet levensvatbaar zonder directe koppeling
+> met Funda. Zie [Conclusie](#conclusie).
+
+## Het idee
+
 Je loopt langs een huis met een te-koop-bord en wilt er meer over weten.
-Open de app en je ziet direct het adres waar je voor staat, met daaronder
-de adressen in de buurt, gesorteerd op afstand. Bij elk adres staat een knop
-om het op Funda op te zoeken.
+Je opent de app en ziet direct dat huis, met daaronder de andere huizen die
+in de buurt te koop staan, gesorteerd op afstand vanaf je exacte locatie.
 
-## Hoe het werkt
+## Wat er gebouwd is
 
-1. De browser bepaalt je GPS-locatie.
-2. De [PDOK Locatieserver](https://api.pdok.nl/bzk/locatieserver/search/v3_1/ui/)
-   (gratis open data van de overheid, BAG-adressen) geeft de dichtstbijzijnde
-   adressen terug, gesorteerd op afstand.
-3. Per adres zijn er links naar Funda:
-   - **Open dit huis op Funda**: springt via DuckDuckGo direct naar de eerste
-     Funda-advertentie voor dit adres
-     (Funda heeft geen vaste URL per adres die je zonder hun data kunt maken).
-   - **Te koop in deze postcode**: opent Funda's zoekpagina voor de postcode.
+Een kleine webapp (PWA, geen build-stap) die:
 
-De app weet zelf **niet** welke huizen te koop staan: Funda biedt daar geen
-openbare API voor. Dat zie je pas op Funda zelf.
+1. je locatie bepaalt via de browser en blijft verfijnen tot de GPS
+   nauwkeurig genoeg is;
+2. via de [PDOK Locatieserver](https://api.pdok.nl/bzk/locatieserver/search/v3_1/ui/)
+   (open BAG-data van de overheid) de dichtstbijzijnde **adressen** ophaalt,
+   gesorteerd op afstand;
+3. per adres doorlinkt naar Funda: de zoekpagina voor de postcode, of via
+   DuckDuckGo direct naar de eerste Funda-advertentie voor dat adres.
 
-## Installeren op je telefoon
+Live: <https://seedoubleyou.dev/fundaar/>
 
-Locatie werkt alleen via HTTPS. De makkelijkste route is GitHub Pages:
+## Conclusie
 
-1. Repo → *Settings* → *Pages* → *Deploy from a branch* → `main` / `(root)`.
-2. Open de Pages-URL op je telefoon.
-3. Voeg toe aan beginscherm (iOS: deelknop → *Zet op beginscherm*;
-   Android: menu → *App installeren*).
+De kern van het idee is **alleen huizen die echt te koop staan**, gesorteerd
+op exacte afstand. Dat lukt niet zonder Funda's data:
+
+- **Welke huizen te koop staan, weet alleen Funda** (of een makelaar). Funda
+  heeft geen openbare API; de partner-API is alleen voor makelaars en
+  zakelijke partners.
+- **Sorteren op afstand** vereist de locaties van alle te-koop-huizen in de
+  buurt tegelijk. Zonder die data kan de app alleen *adressen* tonen en
+  hopen dat er een advertentie bij hoort.
+- **Omwegen via zoekmachines** (Google, DuckDuckGo) zijn te grof: veel ruis,
+  of een lege pagina als het adres niet te koop staat.
+- **Scrapen** van Funda is in strijd met hun voorwaarden en wordt actief
+  geblokkeerd; dat is bewust niet gedaan.
+
+Wat wél goed werkt: locatie tot op ±5–15 m (mits *Exacte locatie* aan staat
+op de telefoon), adressen op afstand sorteren, en de interface. Met toegang
+tot Funda-data (bijv. via de partner-API of een makelaar) kan dit vrij
+direct worden afgemaakt: vervang de PDOK-adressen door te-koop-advertenties
+met coördinaten, de rest kan blijven.
 
 ## Lokaal draaien
 
@@ -40,5 +56,5 @@ dus locatie werkt daar ook).
 
 ## Bestanden
 
-- `index.html`, `style.css`, `app.js`: de app (geen build-stap, geen dependencies)
+- `index.html`, `style.css`, `app.js`: de app (geen dependencies)
 - `manifest.webmanifest`, `sw.js`, `icon*`: installeerbaar als PWA
