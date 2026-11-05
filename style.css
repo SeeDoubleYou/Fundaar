@@ -89,7 +89,7 @@ main { padding: 0 16px 24px; max-width: 640px; margin: 0 auto; }
 /* In de lijst compacter: alleen de hoofdknop tonen */
 #nearby-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 #nearby-list .actions { margin-top: 8px; }
-#nearby-list .funda-area { display: none; }
+#nearby-list .funda-addr { display: none; }
 
 footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 0 16px 24px; }
 footer a { color: inherit; }
@@ -97,3 +97,19 @@ footer a { color: inherit; }
 .hint { color: var(--muted); font-size: .85rem; margin: -4px 0 8px; }
 #nearby-list li { cursor: pointer; }
 #nearby-list li:active .addr { border-color: var(--accent); }
+
+.help {
+  background: var(--warn-bg); color: var(--warn-text);
+  border-radius: 10px; padding: 12px; margin: 8px 0; font-size: .92rem;
+}
+.help ul { margin: 8px 0; padding-left: 18px; }
+.help li { margin-bottom: 6px; }
+
+#search { display: flex; gap: 8px; margin: 12px 0 4px; }
+#search input {
+  flex: 1; min-width: 0;
+  font: inherit; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--card); color: var(--text);
+}
+#search .btn { flex: 0 0 auto; background: var(--card); cursor: pointer; font: inherit; }

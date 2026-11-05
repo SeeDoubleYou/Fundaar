@@ -22,6 +22,26 @@
   <main>
     <p id="status" role="status">Locatie bepalen…</p>
 
+    <section id="precise-help" class="help" hidden>
+      <strong>Je telefoon geeft alleen je globale locatie door.</strong>
+      Zet <em>Exacte locatie</em> aan en tik daarna op ↻:
+      <ul>
+        <li data-os="ios"><b>iPhone:</b> Instellingen → Privacy en beveiliging → Locatievoorzieningen →
+          Safari-websites → zet <em>Exacte locatie</em> aan.</li>
+        <li data-os="android"><b>Android:</b> Instellingen → Apps → Chrome → Rechten → Locatie →
+          zet <em>Exacte locatie gebruiken</em> aan. Tik daarna in Chrome op het icoon links van het
+          adres → Rechten → Locatie, en sta die toe.</li>
+      </ul>
+      Of typ hieronder de postcode en het huisnummer.
+    </section>
+
+    <form id="search" autocomplete="off">
+      <input id="search-q" type="search" inputmode="search"
+             placeholder="Postcode + huisnummer"
+             aria-label="Zoek adres">
+      <button type="submit" class="btn">Zoek</button>
+    </form>
+
     <section id="here" hidden>
       <h2>Hier sta je</h2>
       <div id="here-card"></div>
@@ -36,7 +56,7 @@
 
   <footer>
     Adressen: <a href="https://www.pdok.nl/" target="_blank" rel="noopener">PDOK / BAG</a>.
-    Geen onderdeel van Funda. · <span id="version">v6</span>
+    Geen onderdeel van Funda. · <span id="version">v7</span>
   </footer>
 
   <template id="addr-tpl">
@@ -49,8 +69,8 @@
         <div class="dist"></div>
       </div>
       <div class="actions">
-        <a class="btn primary funda-addr" target="_blank" rel="noopener">Open dit huis op Funda</a>
-        <a class="btn funda-area" target="_blank" rel="noopener">Te koop in deze postcode</a>
+        <a class="btn primary funda-area" target="_blank" rel="noopener">Te koop in deze postcode</a>
+        <a class="btn funda-addr" target="_blank" rel="noopener">Direct naar advertentie</a>
       </div>
     </article>
   </template>

@@ -60,6 +60,18 @@ async function fetchNearby(lat, lon) {
   return docs.map(toAddress).sort((a, b) => (a.distance ?? 1e9) - (b.distance ?? 1e9));
 }
 
+// Vrij zoeken op adres (bv. "3511AB 5"); geeft het punt van dat adres terug.
+const PDOK_FREE = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
+async function geocode(q) {
+  const params = new URLSearchParams({ q, fq: "type:adres", rows: "1", fl: "weergavenaam,centroide_ll" });
+  const res = await fetch(`${PDOK_FREE}?${params}`);
+  if (!res.ok) throw new Error(`PDOK gaf status ${res.status}`);
+  const doc = (((await res.json()).response || {}).docs || [])[0];
+  const m = doc && /POINT\(([-\d.]+) ([-\d.]+)\)/.exec(doc.centroide_ll || "");
+  if (!m) return null;
+  return { name: doc.weergavenaam, longitude: +m[1], latitude: +m[2] };
+}
+
 // --- Weergave ----------------------------------------------------------------
 function formatDistance(m) {
   if (m == null) return "";
@@ -120,10 +132,17 @@ function selectAddress(a) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+const COARSE_ACCURACY_M = 200; // daarboven geeft de telefoon bewust een globale locatie
+
 function updateStatus() {
   if (!best) return;
   const acc = Math.round(best.accuracy);
-  if (manual) {
+  $("#precise-help").hidden = !(best.accuracy > COARSE_ACCURACY_M && !best.searched);
+  if (best.searched) {
+    setStatus(`Gezocht adres: ${best.name}. Tik op ↻ om weer je locatie te gebruiken.`);
+  } else if (best.accuracy > COARSE_ACCURACY_M) {
+    setStatus(`Je locatie is erg onnauwkeurig (±${acc} m), dus de huizen hieronder kloppen waarschijnlijk niet.`, true);
+  } else if (manual) {
     setStatus("Je hebt zelf een huis gekozen. Tik op ↻ om opnieuw te zoeken.");
   } else if (watchId !== null) {
     setStatus(`Locatie verfijnen… nu ±${acc} m. Blijf even stilstaan.`);
@@ -215,6 +234,7 @@ function startWatch() {
   }
   best = null;
   manual = false;
+  $("#precise-help").hidden = true;
   setStatus("Locatie bepalen…");
   document.body.classList.add("loading");
   watchId = navigator.geolocation.watchPosition(onPosition, onPositionError, {
@@ -233,9 +253,37 @@ function stopWatch() {
   document.body.classList.remove("loading");
 }
 
+$("#search").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const input = $("#search-q");
+  const q = input.value.trim();
+  if (!q) return;
+  input.blur();
+  stopWatch();
+  setStatus("Adres zoeken…");
+  try {
+    const hit = await geocode(q);
+    if (!hit) { setStatus(`Geen adres gevonden voor "${q}".`, true); return; }
+    best = { ...hit, accuracy: 0, searched: true };
+    manual = false;
+    await refreshAddresses();
+  } catch (err) {
+    setStatus(`Adres zoeken mislukt: ${err.message}`, true);
+  }
+});
+
+// Toon in de hulptekst alleen de stappen voor dit type telefoon (als bekend).
+(() => {
+  const ua = navigator.userAgent;
+  const os = /iPhone|iPad|iPod|Macintosh.*Mobile/.test(ua) ? "ios" : /Android/.test(ua) ? "android" : null;
+  if (os) document.querySelectorAll("#precise-help [data-os]").forEach((li) => {
+    li.hidden = li.dataset.os !== os;
+  });
+})();
+
 $("#refresh").addEventListener("click", startWatch);
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") startWatch();
+  if (document.visibilityState === "visible" && !(best && best.searched) && !manual) startWatch();
   else stopWatch();
 });
 startWatch();
